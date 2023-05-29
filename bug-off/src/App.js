@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div>
-      {isSignUp ? <SignUp /> : <Login />}
+      {isSignUp ? <SignUp setIsSignUp={setIsSignUp}/> : <Login />}
       <ThemeProvider theme={theme}>
         <Container maxWidth="xs">
           <Box 
