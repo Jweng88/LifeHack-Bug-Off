@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import useFirebaseConfig from '../firebase/useFirebaseConfig';
 
 // MUI imports
@@ -21,33 +21,107 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-const SignUp = () => {
+const SignUp = ({ setIsSignUp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const auth = getAuth();
+  
+  const [accExists, setAccExists] = useState(false);
+  const [shortPw, setShortPw] = useState(false);
 
-  const handleSignUp = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+    })
+      .catch((error) => {
+        if (error.code == "auth/email-already-in-use") {
+          setAccExists(true);
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      
-      // Add display name to user profile
-      await user.updateProfile({
-        displayName: displayName
-      });
+          setTimeout(() => {
+            setIsSignUp(false);
+          }, 2000);
+        } else if (error.code == "auth/missing-password" 
+          || error.code == "auth/weak-password") {
+            setShortPw(true);
 
-      // Handle successful user creation
-      console.log(user);
-    } catch (error) {
-      // Handle user creation error
-      console.log(error);
-    }
-  };
+            setTimeout(() => {
+              setShortPw(false);
+            }, 2000);
+        }
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        // ..
+    });
+};
 
+  // format taken from https://github.com/mui/material-ui/blob/v5.13.2/docs/data/material/getting-started/templates/sign-in/SignIn.js
   return (
-    <ThemeProvider theme={theme}>
+    <main >        
+        <section>
+            <div>
+                <div>                  
+                    <h1> FocusApp </h1>                                                                            
+                    <form>                                                                                            
+                        <div>
+                            <label htmlFor="email-address">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                label="Email address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}  
+                                required                                    
+                                placeholder="Email address"                                
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="password">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                label="Create password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required                                 
+                                placeholder="Password"              
+                            />
+                        </div>                                             
+                        
+                        <button
+                            type="submit" 
+                            onClick={onSubmit}                        
+                        >  
+                            Sign up                                
+                        </button>
+                                                                     
+                    </form>
+                    {accExists && 
+                      <h2>email already in use</h2>
+                    }
+                    {shortPw && 
+                      <h2>password must be at least 6 characters long</h2>
+                    }
+                                   
+                </div>
+            </div>
+        </section>
+    </main>
+  )
+}
+
+export default SignUp;
+
+
+{/* <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -64,7 +138,7 @@ const SignUp = () => {
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
-            <Box component="form" onSubmit={handleSignUp} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -102,11 +176,7 @@ const SignUp = () => {
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
-  );
-};
-
-export default SignUp;
+    </ThemeProvider> */}
 
 {/* <h2>Sign Up</h2>
       <form onSubmit={handleSignUp}>
