@@ -67,15 +67,15 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
   
       // Get the user ID
-      // const uid = userCredential.user.uid;
-  
+      const uid = userCredential.user.uid;
+      console.log(uid);
+
       // Create a new document in the "users" collection with the user data
-      // await setDoc(doc(db, "users", uid), {
-      //   email: data.email,
-      //   // Add any additional user data fields you want to store
-      //   level: 0,
-      //   position: ""
-      // });
+      await setDoc(doc(db, "users", uid), {
+        // Add any additional user data fields you want to store
+        level: 0,
+        position: "normal"
+      });
   
       setIsLoggedIn(true);
     } catch (error) {
