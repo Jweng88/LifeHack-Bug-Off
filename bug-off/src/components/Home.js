@@ -9,7 +9,7 @@ export default function Home() {
     useEffect(() => {
         const getData = async () => {
             const data = await getDocs(taskDB)
-            setTasks(data.docs.map((doc) => ({...doc.data, id: doc.id})))
+            setTasks(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
         }
         getData()
     }, [])
