@@ -62,7 +62,13 @@ const SignUp = ({ setIsSignUp }) => {
 
   // format taken from https://github.com/mui/material-ui/blob/v5.13.2/docs/data/material/getting-started/templates/sign-in/SignIn.js
   return (
-    <main >        
+    <main >    
+        <ThemeProvider theme={theme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+              
+          </Container>
+        </ThemeProvider>    
         <section>
             <div>
                 <div>                  

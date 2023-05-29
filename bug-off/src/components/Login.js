@@ -67,15 +67,15 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
   
       // Get the user ID
-      const uid = userCredential.user.uid;
+      // const uid = userCredential.user.uid;
   
       // Create a new document in the "users" collection with the user data
-      await setDoc(doc(db, "users", uid), {
-        email: data.email,
-        // Add any additional user data fields you want to store
-        level: 0,
-        position: ""
-      });
+      // await setDoc(doc(db, "users", uid), {
+      //   email: data.email,
+      //   // Add any additional user data fields you want to store
+      //   level: 0,
+      //   position: ""
+      // });
   
       setIsLoggedIn(true);
     } catch (error) {
@@ -97,7 +97,7 @@ export default function Login() {
     return () => {
       unsubscribe();
     };
-  }, [auth]);
+  }, []);
 
     
     // format taken from https://github.com/mui/material-ui/blob/v5.13.2/docs/data/material/getting-started/templates/sign-in/SignIn.js
