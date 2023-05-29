@@ -1,12 +1,20 @@
 import { useState } from 'react'
 import Login from "./components/Login"
-import './App.css';
+import SignUp from './components/Signup';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
+
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
+  };
+
   return (
-    <div className ="App-header">
-      { !isLoggedIn && <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
+    <div>
+      {isSignUp ? <SignUp /> : <Login />}
+      <button onClick={toggleMode}>
+        {isSignUp ? 'Switch to Login' : 'Switch to Sign Up'}
+      </button>
     </div>
   );
 }

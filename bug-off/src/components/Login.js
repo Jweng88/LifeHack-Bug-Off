@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react'
-import useFirebaseConfig from "../useFirebaseConfig"
+import useFirebaseConfig from "../firebase/useFirebaseConfig"
+import { ...Avatar, , button, }
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import {
     getAuth,
     signInWithEmailAndPassword,
@@ -8,7 +23,7 @@ import {
   } from "firebase/auth";
 
 export default function Login() {
-    const  { app, analytics } = useFirebaseConfig(); 
+    const  { app, analytics, db } = useFirebaseConfig(); 
 
     const auth = getAuth();
     const [data, setData] = useState({
@@ -57,7 +72,8 @@ export default function Login() {
       };
     }, [auth]);
   
-  
+    const defaultTheme = createTheme();
+    
     return (
     <div className ="LoginForm">
         <div className="input-fields"> 
@@ -75,8 +91,8 @@ export default function Login() {
             onChange={event => handleInputs(event)}
           />
         </div>
-        <button onClick={addData}>Log In</button>
-        <button onClick={handleLogout}>Log out</button>
+        <Button onClick={addData}>Log In</Button>
+        <Button onClick={handleLogout}>Log out</Button>
     </div>
     );
 }
