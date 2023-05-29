@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
-import { auth } from './firebase';
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const auth = getAuth();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async(e) => {
     e.preventDefault();
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Handle successful user creation
-        console.log(userCredential.user);
-      })
-      .catch((error) => {
-        // Handle user creation error
-        console.log(error);
-      });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+  
+      // Additional actions after successful user creation
+      // For example, you can display a success message, redirect the user, etc.
+  
+      console.log('User created:', user);
+    } catch (error) {
+      // Handle signup errors
+      console.log('Signup error:', error.message);
+    }
   };
 
   return (

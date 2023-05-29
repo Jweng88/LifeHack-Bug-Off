@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react'
 import useFirebaseConfig from "../firebase/useFirebaseConfig"
-import { ...Avatar, , button, }
+
+// MUI imports
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { theme } from '../style/mui_imports'
 
 import {
-    getAuth,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
-  } from "firebase/auth";
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 export default function Login() {
     const  { app, analytics, db } = useFirebaseConfig(); 
@@ -37,7 +35,8 @@ export default function Login() {
       setData({ ...data, ...inputs });
     };
   
-    const addData = () => {
+    const addData = (e) => {
+      e.preventDefault();
       signInWithEmailAndPassword(auth, data.email, data.password)
         .then(() => {
           setIsLoggedIn(true);
@@ -72,27 +71,64 @@ export default function Login() {
       };
     }, [auth]);
   
-    const defaultTheme = createTheme();
     
+    // format taken from https://github.com/mui/material-ui/blob/v5.13.2/docs/data/material/getting-started/templates/sign-in/SignIn.js
     return (
-    <div className ="LoginForm">
-        <div className="input-fields"> 
-          <input
-              placeholder="Email"
-              name="email"
-              type="email"
-              onChange={event => handleInputs(event)}
-          />
-          <input
-            placeholder="Password"
-            name="password"
-            type="password"
-            className="input-fields"
-            onChange={event => handleInputs(event)}
-          />
-        </div>
-        <Button onClick={addData}>Log In</Button>
-        <Button onClick={handleLogout}>Log out</Button>
-    </div>
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: '#29a2ed'}}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Log in
+            </Typography>
+            <Box component="form" onSubmit={addData} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={event => handleInputs(event)}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={event => handleInputs(event)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ 
+                  mt: 3, 
+                  mb: 2,
+                  fontWeight: 700
+                }}
+              >
+                Sign In
+              </Button>
+            </Box>
+          </Box>
+        </Container>
+      </ThemeProvider>
     );
 }

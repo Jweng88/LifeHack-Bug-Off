@@ -1,12 +1,12 @@
 // template for what task would look like
 import React from 'react'
 
-export default function task({text, user, xp}) {
+export default function Task({completed, doneBy, from, text, xp, id}) {
   return (
-    <div>
-        <h1>Task from: {user}</h1>
+    <li key={id}>
+        <p>Task from: {from}</p>
         <p>{text}</p>
         <p>earn {xp}!</p>
-    </div>
+    </li>
   )
 }

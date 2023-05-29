@@ -25,7 +25,7 @@ export const db = getFirestore(app);
 
 
 const useFirebaseConfig = () => {
-  return { app, analytics, db }
+  return { app, analytics, db}
 };
 
 export default useFirebaseConfig;

@@ -1,15 +1,17 @@
 // would display list of tasks
 import React from 'react'
-import task from './task'
+import Task from './task'
 
 // i assume the tasks prop to be a an array of task obj that has the text, xp and user field
-export default function taskList({ tasks }) {
+function TaskList({ tasks }) {
   return (
     <div>
-        <h1>available tasks</h1>
+        <p>available tasks</p>
         <ul>
-            {tasks.map((task) => <li key={task.user}><task props={task} /></li>)}
+            {tasks.map((task) => <Task props={task} />)}
         </ul>
     </div>
   )
 }
+
+export default TaskList;
