@@ -12,8 +12,10 @@ Goals: gain experience in developing a React & Firebase CRUD application
 
 ### React
 
-Frontend framework for this application. Makes use of hooks, and Material UI to create a user friendly interface.
+Frontend framework for this application. Makes use of hooks, and Material UI in an attempt to create a user friendly interface. 
+(note that this is the first time the team has had exposure to MUI)
 
 ### Firebase
 
 Backend framework for this application. Makes use of user authentication and database features available.
+(Pughal77 and jayllo-c are using firebase for the first time in this project)
