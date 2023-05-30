@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import useFirebaseConfig from "../firebase/useFirebaseConfig";
 import { 
   collection, 
+  getDoc,
   getDocs, 
   addDoc, 
   updateDoc, 
@@ -25,12 +26,14 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Backdrop from '@mui/material/Backdrop';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { theme } from '../style/mui_imports'
 
 
-export default function Login() {
+export default function Login({ setIsLoggedIn, setUid }) {
   const  { app, analytics, db } = useFirebaseConfig(); 
+  const [isWrong, setIsWrong] = useState(false);
 
   // current database of users
   const [users, setUsers] = useState([]);
@@ -54,7 +57,7 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
 
   const handleInputs = (event) => {
     const inputs = { [event.target.name]: event.target.value };
@@ -68,26 +71,63 @@ export default function Login() {
   
       // Get the user ID
       const uid = userCredential.user.uid;
-      console.log(uid);
+      setUid(uid);
+      console.log(`uid: ${uid}`);
 
-      // Create a new document in the "users" collection with the user data
-      await setDoc(doc(db, "users", uid), {
-        // Add any additional user data fields you want to store
-        level: 0,
-        position: "normal"
-      });
+      // Retrieve the existing user document data
+      const userRef = doc(db, "users", uid);
+      const userDoc = await getDoc(userRef);
+      console.log(`userDoc: ${userDoc.data()}`)
+      
+    
+      //const existingData = userDoc.data();
+
+      // Merge the existing data with the new data, while preserving the existing "xp" value
+      
+      if (userDoc.exists()) {
+        // Document exists, retrieve existing data
+        const existingData = userDoc.data();
   
+        // Merge the existing data with the new data, while preserving the existing "xp" value
+        const newData = {
+          ...existingData,
+          xp: existingData.xp,
+          position: existingData.position // Add any additional user data fields you want to update or add
+        };
+  
+        console.log("successful login")
+        // Update the document in the "users" collection with the merged data
+        await setDoc(doc(db, "users", uid), newData);
+      } else {
+        // Document does not exist, create a new document with default values
+        const newData = {
+          xp: 0,
+          position: "normal" // Add any additional user data fields you want to store
+        };
+
+        console.log("successful login, creating new entry in db")
+
+        // Create a new document in the "users" collection with the user data
+        await setDoc(doc(db, "users", uid), newData);
+      }
       setIsLoggedIn(true);
     } catch (error) {
       console.log("Login error:", error);
+      if (error.code == "auth/wrong-password" || error.code == "auth/missing-password") {
+        setIsWrong(true);
+
+          setTimeout(() => {
+            setIsWrong(false);
+          }, 2000);
+      }
     }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setIsLoggedIn(true);
-        const uid = user.uid;
+        //setIsLoggedIn(true);
+        // const uid = user.uid;
 
       } else {
         setIsLoggedIn(false);
@@ -155,6 +195,34 @@ export default function Login() {
                 Sign In
               </Button>
             </Box>
+            {isWrong && 
+              <Backdrop
+                sx={{ color: '#FFF', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={isWrong}
+              > 
+                <Box
+                  sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box sx={{ 
+                    mt: 1,
+                    backgroundColor: '#c41e16',
+                    borderRadius: 2,
+                    padding: 1
+                  }}>
+                    <Typography component="h1" variant="h5">
+                      wrong password
+                    </Typography>
+                  </Box>
+                  <Box sx={{ mt: 1 }}>
+                  </Box>
+                </Box>
+              </Backdrop>
+            }
           </Box>
         </Container>
       </ThemeProvider>

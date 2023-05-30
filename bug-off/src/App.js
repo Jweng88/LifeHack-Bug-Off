@@ -18,6 +18,8 @@ import { theme } from './style/mui_imports'
 function App() {
 
   const [isSignUp, setIsSignUp] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [uid, setUid] = useState("");
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
@@ -25,8 +27,8 @@ function App() {
 
   return (
     <div>
-      {isSignUp ? <SignUp setIsSignUp={setIsSignUp}/> : <Login />}
-      <ThemeProvider theme={theme}>
+      { !isLoggedIn && (isSignUp ? <SignUp setIsSignUp={setIsSignUp}/> : <Login setIsLoggedIn={setIsLoggedIn} setUid={setUid}/>)}
+      { !isLoggedIn && <ThemeProvider theme={theme}>
         <Container maxWidth="xs">
           <Box 
             sx={{
@@ -50,10 +52,9 @@ function App() {
             </Button>
           </Box>
         </Container>
-      </ThemeProvider>
-      
+      </ThemeProvider>}
       <div>
-        <Home />
+        {isLoggedIn && <Home uid = {uid}/>}
       </div>
     </div>
   );

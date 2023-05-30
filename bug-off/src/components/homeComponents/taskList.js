@@ -7,15 +7,14 @@ function TaskList({ tasks }) {
   return (
     <div>
         <p>available tasks</p>
-        <ul>
+        <ol>
           {tasks.map((task) => 
                 <Task 
-                  from = {task.from}
                   text = {task.text}
                   xp = {task.xp}
                   id = {task.id} 
                 />)}
-        </ul>
+        </ol>
     </div>
   )
 }

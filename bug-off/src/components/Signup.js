@@ -11,7 +11,9 @@ import Box from '@mui/material/Box';
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '../style/mui_imports'
 
 import {
@@ -114,14 +116,58 @@ const SignUp = ({ setIsSignUp }) => {
                   fontWeight: 700
                 }}
               >
-                Sign In
+                Sign Up
               </Button>
             </Box>
             {accExists && 
-              <h2>email already in use</h2>
+              <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={accExists}
+              > 
+                <Box
+                  sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CircularProgress color="inherit" sx={{ m: 1}}/>
+                  <Box sx={{ mt: 1 }}>
+                    <Typography component="h1" variant="h5">
+                      email already in use, redirecting to login page
+                    </Typography>
+                  </Box>
+                </Box>
+              </Backdrop>
             }
             {shortPw && 
-              <h2>password must be at least 6 characters long</h2>
+              <Backdrop
+                sx={{ color: '#FFF', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={shortPw}
+              > 
+                <Box
+                  sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box sx={{ 
+                    mt: 1,
+                    backgroundColor: '#c41e16',
+                    borderRadius: 2,
+                    padding: 1
+                  }}>
+                    <Typography component="h1" variant="h5">
+                      password must be at least 6 characters long
+                    </Typography>
+                  </Box>
+                  <Box sx={{ mt: 1 }}>
+                  </Box>
+                </Box>
+              </Backdrop>
             }
           </Box>
         </Container>
